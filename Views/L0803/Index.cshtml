@@ -5,15 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Get Account Data</h2>
 
-<div id="accountData" class="input-group">
-    <input type="text" class="form-control" id="accountInput" />
-    <span class="input-group-btn">
-        <button type="button" id="submitButton" class="btn btn-primary">SUBMIT</button>
-    </span>
+    
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Get Account Data</h2>
+        <div id="accountData" class="input-group" style="max-width: 400px;">
+            <input type="text" class="form-control" id="accountInput" placeholder="enter your account"/>
+            <span class="input-group-btn">
+                <button type="button" id="submitButton" class="btn btn-primary">SUBMIT</button>
+            </span>
+        </div>
+    </div>
 </div>
-
+    
 <div id="account-data"></div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -28,7 +33,23 @@
 
 <script>
     $(document).ready(function (){
+        $("#accountInput").on('input', function (){
+            const inputLength = $(this).val().length;
+            if (inputLength >= 12) {
+                $("#submitButton").prop('disabled', false);
+            } else {
+                $("#submitButton").prop('disabled', true);
+            }
+        });
+        
         $("#submitButton").click(function () {
+            const inputLength = $(this).val().length;
+                        if (inputLength >= 12) {
+                            $("#submitButton").prop('disabled', false);
+                        } else {
+                            $("#submitButton").prop('disabled', true);
+                        }
+                        
             const accountValue = $("#accountInput").val();
             console.log("Submitting for account value:", accountValue);
             
