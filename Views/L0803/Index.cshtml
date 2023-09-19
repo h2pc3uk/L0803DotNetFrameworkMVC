@@ -1,12 +1,8 @@
-@* @model TModel *@
-
 @{
     ViewBag.Title = "title";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-    
 <div class="row">
     <div class="col-lg-6">
         <h2>Get Account Data</h2>
@@ -21,75 +17,75 @@
     
 <div id="account-data"></div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $.get("http://127.0.0.1:5000/L0803/HelloWorld", function (data) {
-            console.log(data.Message);
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function (){
-        $("#accountInput").on('input', function (){
-            const inputLength = $(this).val().length;
-            if (inputLength >= 12) {
-                $("#submitButton").prop('disabled', false);
-            } else {
-                $("#submitButton").prop('disabled', true);
-            }
-        });
-        
-        $("#submitButton").click(function () {
-            const inputLength = $(this).val().length;
-                        if (inputLength >= 12) {
-                            $("#submitButton").prop('disabled', false);
-                        } else {
-                            $("#submitButton").prop('disabled', true);
-                        }
-                        
-            const accountValue = $("#accountInput").val();
-            console.log("Submitting for account value:", accountValue);
-            
-            $.ajax({
-            url: "http://127.0.0.1:5000/L0803/FetchAccountData",
-            type: "POST",
-            dataType: "json",
-            data: { accountValue: accountValue },
-            success: function (response) {
-                console.log("Received response:", response);
-                
-                let cname = response.CNAME.trim();
-                let payDatas = response.PayDatas;
-                                        
-                let htmlString = `<h2>Customer Name: ${cname}</h2>`;
-                htmlString += `<ul id="pay-datas-list">`;
-                                        
-                for (let i = 0; i < payDatas.length; i++){
-                    htmlString += `<li>Record Count: ${payDatas[i].RecCount}</li>`;
-                    htmlString += `<ul>`;
-                    htmlString += `<li>Start Date: ${payDatas[i].SDate}</li>`;
-                    htmlString += `<li>End Date: ${payDatas[i].EDate}</li>`;
-                    htmlString += `<li>Amount: ${payDatas[i].Amt}</li>`;
-                    htmlString += `<li>Interest: ${payDatas[i].Int}</li>`;
-                    htmlString += `<li>Dfamt: ${payDatas[i].Dfamt}</li>`;
-                    htmlString += `<li>Dfdays: ${payDatas[i].Dfdays}</li>`;
-                    htmlString += `<li>Diamt: ${payDatas[i].Diamt}</li>`;
-                    htmlString += `<li>Flag: ${payDatas[i].Flag}</li>`;
-                    htmlString += `<li>Pramt: ${payDatas[i].Pramt}</li>`;
-                    htmlString += `<li>Subtotal: ${payDatas[i].Subtotal}</li>`;
-                    htmlString += `</ul></li>`;
+@* <script type="text/javascript"> *@
+@*     $(document).ready(function () { *@
+@*         $.get("http://127.0.0.1:5000/L0803/HelloWorld", function (data) { *@
+@*             console.log(data.Message); *@
+@*         }); *@
+@*     }); *@
+@* </script> *@
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#accountInput").on('input', function (){
+                const inputLength = $(this).val().length;
+                if (inputLength >= 12) {
+                    $("#submitButton").prop('disabled', false);
+                } else {
+                    $("#submitButton").prop('disabled', true);
                 }
-                                        
-                htmlString += `</ul>`;
-                $("#account-data").empty().append(htmlString);
-            },
-            error: function (xhr, status, error) {
-                console.log("Error", error);
-            }
+            });
+            
+            $("#submitButton").click(function () {
+                const inputLength = $(this).val().length;
+                            if (inputLength >= 12) {
+                                $("#submitButton").prop('disabled', false);
+                            } else {
+                                $("#submitButton").prop('disabled', true);
+                            }
+                            
+                const accountValue = $("#accountInput").val();
+                console.log("Submitting for account value:", accountValue);
+                
+                $.ajax({
+                url: "http://127.0.0.1:5000/L0803/FetchAccountData",
+                type: "POST",
+                dataType: "json",
+                data: { accountValue: accountValue },
+                success: function (response) {
+                    console.log("Received response:", response);
+                    
+                    let cname = response.CNAME.trim();
+                    let payDatas = response.PayDatas;
+                                            
+                    let htmlString = `<h2>Customer Name: ${cname}</h2>`;
+                    htmlString += `<ul id="pay-datas-list">`;
+                                            
+                    for (let i = 0; i < payDatas.length; i++){
+                        htmlString += `<li>Record Count: ${payDatas[i].RecCount}</li>`;
+                        htmlString += `<ul>`;
+                        htmlString += `<li>Start Date: ${payDatas[i].SDate}</li>`;
+                        htmlString += `<li>End Date: ${payDatas[i].EDate}</li>`;
+                        htmlString += `<li>Amount: ${payDatas[i].Amt}</li>`;
+                        htmlString += `<li>Interest: ${payDatas[i].Int}</li>`;
+                        htmlString += `<li>Dfamt: ${payDatas[i].Dfamt}</li>`;
+                        htmlString += `<li>Dfdays: ${payDatas[i].Dfdays}</li>`;
+                        htmlString += `<li>Diamt: ${payDatas[i].Diamt}</li>`;
+                        htmlString += `<li>Flag: ${payDatas[i].Flag}</li>`;
+                        htmlString += `<li>Pramt: ${payDatas[i].Pramt}</li>`;
+                        htmlString += `<li>Subtotal: ${payDatas[i].Subtotal}</li>`;
+                        htmlString += `</ul></li>`;
+                    }
+                                            
+                    htmlString += `</ul>`;
+                    $("#account-data").empty().append(htmlString);
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error", error);
+                }
+                });
             });
         });
-    });
-</script>
+    </script>
+}
