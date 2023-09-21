@@ -71,7 +71,7 @@ namespace L0803DotNetFrameworkMVC.Controllers
                     // If you want to return the model to a view
                     // return View(model);
 
-                    return Json(model, JsonRequestBehavior.AllowGet);
+                    return Json(model);
                 }
                 else
                 {
