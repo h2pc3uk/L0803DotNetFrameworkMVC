@@ -7,31 +7,24 @@
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3" style="margin-top: 100px">
             <div class="form-group">
-                <label for="account" class="col-sm-3 control-label">帳號：</label>
-                <div class="col-sm-12" style="padding-left: 0; padding-right: 0">
-                    <div class="col-md-3">
+                <label for="account" class="col-sm-3 control-label">帳號及支號：</label>
+                <div class="col-lg-12" style="padding-left: 0; padding-right: 0">
+                    <div class="col-md-2">
                         <input type="text" class="form-control" id="account-0" maxlength="4"/>
                     </div>
                     <div class="col-md-2">
                         <input type="text" class="form-control" id="account-1" maxlength="2"/>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" class="form-control" id="account-2" maxlength="5"/>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="text" class="form-control" id="account-3" maxlength="1"/>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-6 col-lg-offset-3" style="margin-top: 10px">
-            <div class="form-group">
-                <label for="sub-account" class="col-sm-3 control-label">支號：</label>
-                <div class="col-sm-12">
-                    <input type="text" class="form-control" id="sub-account" maxlength="4"/>
+                    @* <label for="sub-account" class="col-sm-3 control-label">支號：</label> *@
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" id="sub-account" maxlength="4"/>
+                    </div>    
                 </div>
             </div>
         </div>
@@ -136,85 +129,90 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
+            
             function checkAllFieldsFilled() {
+                let fieldsToCheck = ["#account-0", "#account-1", "#account-2", "#account-3", "#sub-account"];
+                
                 let allFilled = true;
-                $("#account-0, #account-1, #account-2, #account-3").each(function () {
-                    if (
-                        $(this).val().length !== parseInt($(this).attr("maxlength"), 10)
-                    ) {
+                
+                for (let i = 0; i < fieldsToCheck.length; i++) {
+                    let field = $(fieldsToCheck[i]);
+                    
+                    if (field.val().length !== parseInt(field.attr("maxlength"), 10)) {
                         allFilled = false;
-                        return false;
+                        break;
                     }
-                });
+                }
+                
                 return allFilled;
             }
         
-            $("input[type='text']").keyup(function () {
-                console.log("Keyup detected");
-                if ($(this).val().length === parseInt($(this).attr("maxlength"), 10)) {
-                    console.log("Max length reached");
+            $("#account-0, #account-1, #account-2, #account-3, #sub-account").keyup(function(){
+                if ($(this).val().length === parseInt($(this).attr("maxlength"), 12)) {
                     let nextInput = $(this).closest("div").next().find("input");
                     if (nextInput.length === 0) {
                         nextInput = $(this)
-                            .closest(".form-group")
-                            .next()
-                            .find("input")
-                            .first();
+                                        .closest(".form-group")
+                                        .next()
+                                        .find("input")
+                                        .first();
                     }
                     console.log("Final next input:", nextInput);
                     nextInput.focus();
                 }
-        
-                if (checkAllFieldsFilled()) {
-                    const accountValue =
-                        $("#account-0").val() +
-                        $("#account-1").val() +
-                        $("#account-2").val() +
-                        $("#account-3").val();
-                    console.log(
-                        "All fields. Submitting for account value: ",
-                        accountValue
-                    );
-        
-                    $.ajax({
-                        url: "http://127.0.0.1:5000/L0803/FetchAccountData",
-                        type: "POST",
-                        dataType: "json",
-                        data: { accountValue: accountValue },
-                        success: function (response) {
-                            console.log("Received response:", response);
-        
-                            let cname = response.CNAME.trim();
-                            let payDatas = response.PayDatas;
-        
-                            let htmlString = `<h2>Customer Name: ${cname}</h2>`;
-                            htmlString += `<ul id="pay-datas-list">`;
-        
-                            for (let i = 0; i < payDatas.length; i++) {
-                                htmlString += `<li>Record Count: ${payDatas[i].RecCount}</li>`;
-                                htmlString += `<ul>`;
-                                htmlString += `<li>Start Date: ${payDatas[i].SDate}</li>`;
-                                htmlString += `<li>End Date: ${payDatas[i].EDate}</li>`;
-                                htmlString += `<li>Amount: ${payDatas[i].Amt}</li>`;
-                                htmlString += `<li>Interest: ${payDatas[i].Int}</li>`;
-                                htmlString += `<li>Dfamt: ${payDatas[i].Dfamt}</li>`;
-                                htmlString += `<li>Dfdays: ${payDatas[i].Dfdays}</li>`;
-                                htmlString += `<li>Diamt: ${payDatas[i].Diamt}</li>`;
-                                htmlString += `<li>Flag: ${payDatas[i].Flag}</li>`;
-                                htmlString += `<li>Pramt: ${payDatas[i].Pramt}</li>`;
-                                htmlString += `<li>Subtotal: ${payDatas[i].Subtotal}</li>`;
-                                htmlString += `</ul></li>`;
-                            }
-        
-                            htmlString += `</ul>`;
-                            $("#account-data").empty().append(htmlString);
-                        },
-                        error: function (xhr, status, error) {
-                            console.log("Error", error);
-                        },
-                    });
-                }
+                
+                 if (checkAllFieldsFilled()) {
+                                    const accountValue =
+                                        $("#account-0").val() +
+                                        $("#account-1").val() +
+                                        $("#account-2").val() +
+                                        $("#account-3").val() +
+                                        $("#sub-account").val()
+                                    console.log(
+                                        "All fields. Submitting for account value: ",
+                                        accountValue
+                                    );
+                            
+                                    $.ajax({
+                                        url: "http://127.0.0.1:5000/L0803/FetchAccountData",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: { accountValue: accountValue },
+                                        success: function (response) {
+                                            console.log("Received response:", response);
+                            
+                                            let cname = response.CNAME.trim();
+                                            let payDatas = response.PayDatas;
+                            
+                                            let htmlString = `<h2>Customer Name: ${cname}</h2>`;
+                                            htmlString += `<ul id="pay-datas-list">`;
+                            
+                                            for (let i = 0; i < payDatas.length; i++) {
+                                                htmlString += `<li>Record Count: ${payDatas[i].RecCount}</li>`;
+                                                htmlString += `<ul>`;
+                                                htmlString += `<li>Start Date: ${payDatas[i].SDate}</li>`;
+                                                htmlString += `<li>End Date: ${payDatas[i].EDate}</li>`;
+                                                htmlString += `<li>Amount: ${payDatas[i].Amt}</li>`;
+                                                htmlString += `<li>Interest: ${payDatas[i].Int}</li>`;
+                                                htmlString += `<li>Dfamt: ${payDatas[i].Dfamt}</li>`;
+                                                htmlString += `<li>Dfdays: ${payDatas[i].Dfdays}</li>`;
+                                                htmlString += `<li>Diamt: ${payDatas[i].Diamt}</li>`;
+                                                htmlString += `<li>Flag: ${payDatas[i].Flag}</li>`;
+                                                htmlString += `<li>Pramt: ${payDatas[i].Pramt}</li>`;
+                                                htmlString += `<li>Subtotal: ${payDatas[i].Subtotal}</li>`;
+                                                htmlString += `</ul></li>`;
+                                            }
+                            
+                                            htmlString += `</ul>`;
+                                            $("#account-data").empty().append(htmlString);
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log("Error", error);
+                                        },
+                                    });
+                                }
+                            });
             });
-        });
+            
     </script>
 }
